@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script>
+
+(async () => {
+  const res = await fetch(`http://${window.location.host}/bookmarklet`);
+  const data = await res.json();
+
+  let bookmarkletAnchor = document.createElement("a");
+  bookmarkletAnchor.setAttribute("href", data.bookmarklet);
+  bookmarkletAnchor.setAttribute("style", "display: inline-block;");
+  let bookmarkletName  = document.createTextNode("gaya");
+  bookmarkletAnchor.appendChild(bookmarkletName);
+  document.body.appendChild(bookmarkletAnchor);
+})();
+
+(async () => {
+  const res = await fetch(`http://${window.location.host}/room`);
+  const data = await res.json();
+
+  let roomKeyDiv = document.createElement("div");
+  let roomKey  = document.createTextNode(data.roomKey);
+  roomKeyDiv.appendChild(roomKey);
+  document.body.appendChild(roomKeyDiv);
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div>
+  <input type="text" id="roomKey" />
+</div>
+<div>
+  <ul id="messages">
+
+  </ul>
+</div>
+<script>
+
+let gtTime123 = new Date().getTime();
+setInterval(async () => {
+  const roomKey = document.getElementById("roomKey").value;
+  const messagesUl = document.getElementById("messages");
+  if (roomKey) {
+    const gtTime = gtTime123;
+    const res = await fetch(`http://${window.location.host}/message?room=${roomKey}&time.gt=${gtTime}`);
+    const data = await res.json();
+    if (data.length > 0) {
+      gtTime123 = data[data.length - 1].time;
+
+      for (e of data) {
+        const messageLi = document.createElement("li");
+        const d = new Date(e.time);
+        const year = d.getFullYear();
+        const month = String(d.getMonth()).padStart(2, '0');
+        const date = String(d.getDate()).padStart(2, '0');
+        const hour = String(d.getHours()).padStart(2, '0');
+        const minute = String(d.getMinutes()).padStart(2, '0');
+        const second = String(d.getSeconds()).padStart(2, '0');
+
+        let messageText = document.createTextNode(`${e.message}`);
+
+        const messageTime = document.createElement("span");
+        messageTime.setAttribute("style","font-size: xx-small;");
+        let messageTimeText = document.createTextNode(`(${year}-${month}-${date} ${hour}:${minute}:${second}) `);
+        messageTime.appendChild(messageTimeText)
+
+        messageLi.appendChild(messageTime);
+        messageLi.appendChild(messageText);
+        messagesUl.appendChild(messageLi);
+      }
+    }
+  }
+}, 1000);
+
+</script>
+</body>
+</html>

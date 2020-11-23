@@ -20,7 +20,9 @@
     "fastify-cli": "^2.5.1",
     "fastify-cors": "^5.0.0",
     "fastify-plugin": "^3.0.0",
+    "fastify-static": "^3.3.0",
     "lokijs": "^1.5.11",
+    "minify": "^6.0.1",
     "nanoid": "^3.1.18"
   },
   "devDependencies": {

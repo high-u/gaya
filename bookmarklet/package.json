@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "minify": "echo javascript:$(minify src/bookmarklet.js)"
+    "bookmarklet": "echo javascript:$(minify src/bookmarklet.js)"
   },
   "devDependencies": {
     "minify": "^6.0.1"

@@ -16,7 +16,7 @@ newElement123.appendChild(labelMessage123);
 
 let inputMessage123 = document.createElement("input");
 inputMessage123.setAttribute("type","text"); 
-inputMessage123.setAttribute("size","20");
+inputMessage123.setAttribute("size","40");
 inputMessage123.setAttribute("id","message123");
 inputMessage123.setAttribute("style","color: black; border: 1px solid black; border-radius: 4px;"); 
 

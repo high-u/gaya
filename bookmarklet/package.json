@@ -1,6 +1,11 @@
 {
+  "config": {
+    "hostname": "example.com"
+  },
   "scripts": {
-    "bookmarklet": "echo javascript:$(minify src/bookmarklet.js)"
+    "bookmarklet": "npm run bookmarklet:minify && npm run bookmarklet:hostname",
+    "bookmarklet:minify": "echo javascript:$(minify src/bookmarklet.js) > dist/bookmarklet",
+    "bookmarklet:hostname": "echo \"const fs = require('fs');const t = fs.readFileSync('dist/bookmarklet', 'utf8'); const r = t.replace(/localhost:3000/g, process.env.npm_package_config_hostname);fs.writeFileSync('dist/bookmarklet', r);process.exit(0);\" | node -"
   },
   "devDependencies": {
     "minify": "^6.0.1"

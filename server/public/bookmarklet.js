@@ -41,7 +41,7 @@ inputMessage123.addEventListener("keydown", event => {
       roomKey: inputRoomKey123.value,
       message: inputMessage123.value
     }
-    fetch('http://localhost:3000/xxx', {
+    fetch('https://localhost:3000/xxx', {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -59,7 +59,7 @@ setInterval(async () => {
   const roomKey = inputRoomKey123.value;
   if (roomKey) {
     const gtTime = gtTime123;
-    const res = await fetch(`http://localhost:3000/message?room=${roomKey}&time.gt=${gtTime}`);
+    const res = await fetch(`https://localhost:3000/message?room=${roomKey}&time.gt=${gtTime}`);
     const data = await res.json();
     if (data.length > 0) {
       gtTime123 = data[data.length - 1].time;

@@ -3,6 +3,7 @@ const minify = require('minify');
 
 module.exports = async function (fastify, opts) {
   fastify.get('/bookmarklet', async function (request, reply) {
+    console.log(request)
     const options = {
         html: {
             removeAttributeQuotes: false,

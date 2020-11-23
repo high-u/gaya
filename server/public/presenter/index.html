@@ -17,7 +17,7 @@ setInterval(async () => {
   const messagesUl = document.getElementById("messages");
   if (roomKey) {
     const gtTime = gtTime123;
-    const res = await fetch(`http://${window.location.host}/message?room=${roomKey}&time.gt=${gtTime}`);
+    const res = await fetch(`${location.protocol}//${window.location.host}/message?room=${roomKey}&time.gt=${gtTime}`);
     const data = await res.json();
     if (data.length > 0) {
       gtTime123 = data[data.length - 1].time;

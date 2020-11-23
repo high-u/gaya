@@ -5,7 +5,7 @@
 <script>
 
 (async () => {
-  const res = await fetch(`http://${window.location.host}/bookmarklet`);
+  const res = await fetch(`${location.protocol}//${window.location.host}/bookmarklet`);
   const data = await res.json();
 
   let bookmarkletAnchor = document.createElement("a");
@@ -17,7 +17,7 @@
 })();
 
 (async () => {
-  const res = await fetch(`http://${window.location.host}/room`);
+  const res = await fetch(`${location.protocol}//${window.location.host}/room`);
   const data = await res.json();
 
   let roomKeyDiv = document.createElement("div");

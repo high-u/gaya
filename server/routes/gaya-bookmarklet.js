@@ -11,8 +11,8 @@ module.exports = async function (fastify, opts) {
         },
     };
     const mnfy = await minify('./public/bookmarklet.js', options)
-    const host = request.raw.headers.host
-    const changedHostname = mnfy.replace(/localhost:3000/g, host)
+    const host = process.env.APPLICATION_URL
+    const changedHostname = mnfy.replace(/http:\/\/localhost:3000/g, host)
     
     return { bookmarklet: `javascript:${changedHostname}` }
   })

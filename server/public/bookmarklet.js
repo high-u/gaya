@@ -1,5 +1,5 @@
 const newElement123 = document.createElement("div");
-newElement123.setAttribute('style','position: fixed; left: 0; top: 0; z-index:999999; background-color: #e0e0e0; padding: 10px; border-radius: 0 0 6px 0; filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.2));');
+newElement123.setAttribute('style','position: fixed; left: 0; top: 0; z-index:999999; background-color: #e0e0e0; padding: 10px; border-radius: 0 0 6px 0; filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));');
 
 const labelRoom123 = document.createTextNode("🔑");
 newElement123.appendChild(labelRoom123);
@@ -50,8 +50,6 @@ inputMessage123.addEventListener("compositionend", event => {
 });
 inputMessage123.addEventListener("keydown", event => {
   if (event.key === "Enter" && !compositionState) {
-    inputMessage123.selectionStart = 0;
-    inputMessage123.selectionEnd = inputMessage123.value.length + 1;
 
     const data = {
       roomKey: inputRoomKey123.value,
@@ -67,7 +65,9 @@ inputMessage123.addEventListener("keydown", event => {
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
       body: JSON.stringify(data)
-    }).then(response => response.json()).then(data => {});
+    }).then(response => response.json()).then(data => {
+      inputMessage123.value = "";
+    });
   }
 });
 let gtTime123 = new Date().getTime();
@@ -97,7 +97,7 @@ setInterval(async () => {
         if (e.message.length <= 2) {
           fontSize = 72;
         }
-        messageDiv.setAttribute('style',`font-weight: bold; font-size: ${fontSize}px; color: white; text-shadow: black 0 0 4px; position: fixed; z-index:9999999; top: ${height}px; left: 0; transform: translate(0, ${height}px); opacity: 0; animation-name: fade-in; animation-duration: 5000ms; animation-iteration-count: 1;`);
+        messageDiv.setAttribute('style',`font-weight: bold; font-size: ${fontSize}px; color: white; text-shadow: black 0 0 8px; position: fixed; z-index:9999999; top: ${height}px; left: 0; transform: translate(0, ${height}px); opacity: 0; animation-name: fade-in; animation-duration: 5000ms; animation-iteration-count: 1;`);
 
         let messageText = document.createTextNode(e.message);
         messageDiv.appendChild(messageText);

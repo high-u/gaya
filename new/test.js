@@ -11,12 +11,6 @@ var client = new Faye.Client('http://localhost:8000/');
 //   console.log('Subscribed to Alice!', node);
 // });
 
-const el = document.getElementById("b");
-el.onclick = () => {
-  const a = gun.get('key3');
-  console.log(a);
-};
-
 
 function hoge(message) {
   // let message = "あいうえお"
@@ -42,11 +36,139 @@ function hoge(message) {
   document.body.appendChild(messageDiv);
 }
 
+// https://q-az.net/elements-drag-and-drop/
+function draggable2(child) {
+    //要素の取得
+    // var elements = document.getElementsByClassName("drag-and-drop");
 
+    //要素内のクリックされた位置を取得するグローバル（のような）変数
+    var x;
+    var y;
+
+    let elements = child.parentElement;
+    //マウスが要素内で押されたとき、又はタッチされたとき発火
+    // for(var i = 0; i < elements.length; i++) {
+        elements.addEventListener("mousedown", mdown, false);
+        elements.addEventListener("touchstart", mdown, false);
+    // }
+
+    //マウスが押された際の関数
+    function mdown(e) {
+
+        //クラス名に .drag を追加
+        this.classList.add("drag");
+
+        //タッチデイベントとマウスのイベントの差異を吸収
+        if(e.type === "mousedown") {
+            var event = e;
+        } else {
+            var event = e.changedTouches[0];
+        }
+
+        //要素内の相対座標を取得
+        x = event.pageX - this.offsetLeft;
+        y = event.pageY - this.offsetTop;
+
+        //ムーブイベントにコールバック
+        document.body.addEventListener("mousemove", mmove, false);
+        document.body.addEventListener("touchmove", mmove, false);
+    }
+
+    //マウスカーソルが動いたときに発火
+    function mmove(e) {
+
+        //ドラッグしている要素を取得
+        var drag = document.getElementsByClassName("drag")[0];
+
+        //同様にマウスとタッチの差異を吸収
+        if(e.type === "mousemove") {
+            var event = e;
+        } else {
+            var event = e.changedTouches[0];
+        }
+
+        //フリックしたときに画面を動かさないようにデフォルト動作を抑制
+        e.preventDefault();
+
+        //マウスが動いた場所に要素を動かす
+        drag.style.top = event.pageY - y + "px";
+        drag.style.left = event.pageX - x + "px";
+
+        //マウスボタンが離されたとき、またはカーソルが外れたとき発火
+        drag.addEventListener("mouseup", mup, false);
+        document.body.addEventListener("mouseleave", mup, false);
+        drag.addEventListener("touchend", mup, false);
+        document.body.addEventListener("touchleave", mup, false);
+
+    }
+
+    //マウスボタンが上がったら発火
+    function mup(e) {
+        var drag = document.getElementsByClassName("drag")[0];
+
+        //ムーブベントハンドラの消去
+        document.body.removeEventListener("mousemove", mmove, false);
+        drag.removeEventListener("mouseup", mup, false);
+        document.body.removeEventListener("touchmove", mmove, false);
+        drag.removeEventListener("touchend", mup, false);
+
+        //クラス名 .drag も消す
+        drag.classList.remove("drag");
+    }
+
+}
+
+function draggable(child) {
+  let element = child.parentElement;
+
+  child.onmousedown = function(event) {
+
+    let shiftX = event.clientX - element.getBoundingClientRect().left;
+    let shiftY = event.clientY - element.getBoundingClientRect().top;
+  
+    element.style.position = 'absolute';
+    element.style.zIndex = 1000;
+    document.body.append(element);
+  
+    moveAt(event.pageX, event.pageY);
+  
+    // ボールを（pageX、pageY）座標の中心に置く
+    function moveAt(pageX, pageY) {
+      element.style.left = pageX - shiftX + 'px';
+      element.style.top = pageY - shiftY + 'px';
+    }
+  
+    function onMouseMove(event) {
+      moveAt(event.pageX, event.pageY);
+    }
+  
+    // (3) mousemove でボールを移動する
+    document.addEventListener('mousemove', onMouseMove);
+  
+    // (4) ボールをドロップする。不要なハンドラを削除する
+    element.onmouseup = function() {
+      console.log("onmouseup");
+      document.removeEventListener('mousemove', onMouseMove);
+      element.onmouseup = null;
+    };
+  
+  };
+  
+  child.ondragstart = function() {
+    return false;
+  };
+  
+}
 
 
 const newElement123 = document.createElement("div");
 newElement123.setAttribute('style','position: fixed; left: 0; top: 0; z-index:999999; background-color: #fff; padding: 10px; border-radius: 6px; filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));');
+
+// draggable2(newElement123);
+const dragArea = document.createElement("div");
+dragArea.setAttribute("style","cursor: move; width:20px;height:20px;background-color:gray;");
+newElement123.appendChild(dragArea);
+draggable(dragArea);
 
 const roomWrapper = document.createElement("div");
 
@@ -81,6 +203,7 @@ enterRoom.onclick = () => {
   console.log("sub", sub);
   client.subscribe(`/${sub}`, function(message) {
     console.log('Got a message: ', message.text);
+    hoge(message.text);
   });
 }
 
@@ -90,6 +213,7 @@ newElement123.appendChild(gayaWrapper);
 const inputMessage123 = document.createElement("input");
 inputMessage123.setAttribute("type","text");
 inputMessage123.setAttribute("list","emoji");
+inputMessage123.setAttribute("autocomplete","on");
 inputMessage123.setAttribute("size","40");
 inputMessage123.setAttribute("id","message123");
 inputMessage123.setAttribute("placeholder","words");
@@ -99,14 +223,41 @@ const datalistEmoji123 = document.createElement("datalist");
 datalistEmoji123.setAttribute("id", "emoji");
 datalistEmoji123.setAttribute("style", "background-color: rgba(255, 255, 255, 1);");
 
-const emojis = [
-  "👍", "👏", "🙌", "🙏", "👀", "😀", "🥺", "🤔", "🤯", "😂",
-  "😇", "😍", "🥳", "😱", "😭", "😲", "🙇", "🍺", "🍥", "🍣",
-  "🙈", "🙉", "🙊", "🍕", "🍵", "🥂", "🍻", "🎊","🎉"
-];
-for (emoji of emojis) {
+const emojis = {
+  "thumb1": "👍", 
+  "thumb2": "👏", 
+  "thumb3": "🙌", 
+  "thumb4": "🙏", 
+  "thumb5": "👀", 
+  "thumb6": "😀", 
+  "thumb7": "🥺", 
+  "thumb8": "🤔", 
+  "thumb9": "🤯", 
+  "thumb10": "😂",
+  "thumb11": "😇", 
+  "thumb12": "😍", 
+  "thumb13": "🥳", 
+  "thumb14": "😱", 
+  "thumb15": "😭", 
+  "thumb16": "😲", 
+  "thumb17": "🙇", 
+  "thumb18": "🍺", 
+  "thumb19": "🍥", 
+  "thumb20": "🍣",
+  "thumb21": "🙈", 
+  "thumb22": "🙉", 
+  "thumb23": "🙊", 
+  "thumb24": "🍕", 
+  "thumb25": "🍵", 
+  "thumb26": "🥂", 
+  "thumb27": "🍻", 
+  "thumb28": "🎊",
+  "thumb29": "🎉"
+};
+for(let k of Object.keys(emojis)) {
   const optionEmoji01 = document.createElement("option");
-  optionEmoji01.setAttribute("value", emoji);
+  optionEmoji01.setAttribute("label", k);
+  optionEmoji01.setAttribute("value", emojis[k]);
   datalistEmoji123.appendChild(optionEmoji01);
 }
 
@@ -136,14 +287,4 @@ inputMessage123.addEventListener("keydown", event => {
     });
   }
 });
-
-////////////
-
-
-////////////////////
-
-const el2 = document.getElementById("m");
-el2.onclick = () => {
-  hoge("いいいいいいいい")
-};
 

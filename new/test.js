@@ -1,3 +1,23 @@
+// const x =  require("faye/client/faye-browser");
+
+// const script123 = document.createElement("script");
+// script123.src = "https://cdn.jsdelivr.net/npm/faye@1.4.0/client/faye-browser.js";
+// document.body.appendChild(script123);
+
+var client = new Faye.Client('http://localhost:8000/');
+
+// const alice = gun.get('key3').put({name: 'alice', age: 22});
+// alice.on(function(node){
+//   console.log('Subscribed to Alice!', node);
+// });
+
+const el = document.getElementById("b");
+el.onclick = () => {
+  const a = gun.get('key3');
+  console.log(a);
+};
+
+
 function hoge(message) {
   // let message = "あいうえお"
   let plusHeight = 100;
@@ -26,27 +46,54 @@ function hoge(message) {
 
 
 const newElement123 = document.createElement("div");
-newElement123.setAttribute('style','position: fixed; left: 0; top: 0; z-index:999999; background-color: #e0e0e0; padding: 10px; border-radius: 0 0 6px 0; filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));');
+newElement123.setAttribute('style','position: fixed; left: 0; top: 0; z-index:999999; background-color: #fff; padding: 10px; border-radius: 6px; filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));');
 
-const labelRoom123 = document.createTextNode("🔑");
-newElement123.appendChild(labelRoom123);
+const roomWrapper = document.createElement("div");
+
+newElement123.appendChild(roomWrapper);
+
+// const labelRoom123 = document.createTextNode("🏠");
+// roomWrapper.appendChild(labelRoom123);
 
 const inputRoomKey123 = document.createElement("input");
 inputRoomKey123.setAttribute("type","text");
 inputRoomKey123.setAttribute("size","20");
 inputRoomKey123.setAttribute("id","roomkey123");
-inputRoomKey123.setAttribute("style","color: black; background-color: #c0c0c0; border: 1px solid #c0c0c0; border-radius: 4px; display: inline-block; padding: 8px; margin: 0 12px 0 0;");
-newElement123.appendChild(inputRoomKey123);
+inputRoomKey123.setAttribute("placeholder","Room Name");
+inputRoomKey123.setAttribute("style","color: black; background-color: #ddd; border: 1px solid #ddd; border-radius: 4px; display: inline-block; padding: 8px; margin: 0 12px 0 0;");
+roomWrapper.appendChild(inputRoomKey123);
 
-const labelMessage123 = document.createTextNode( "💬");
-newElement123.appendChild(labelMessage123);
+const inputKey = document.createElement("input");
+inputKey.setAttribute("type","text");
+inputKey.setAttribute("size","20");
+inputKey.setAttribute("id","inputKey");
+inputKey.setAttribute("placeholder","Key");
+inputKey.setAttribute("style","color: black; background-color: #ddd; border: 1px solid #ddd; border-radius: 4px; display: inline-block; padding: 8px; margin: 0 12px 0 0;");
+roomWrapper.appendChild(inputKey);
+
+
+const enterRoom = document.createElement("Button");
+roomWrapper.appendChild(enterRoom);
+const enterText = document.createTextNode("Enter");
+enterRoom.appendChild(enterText);
+enterRoom.onclick = () => {
+  const sub = CryptoJS.enc.Hex.stringify(CryptoJS.SHA1(`${inputRoomKey123.value}\t${inputKey.value}`));
+  console.log("sub", sub);
+  client.subscribe(`/${sub}`, function(message) {
+    console.log('Got a message: ', message.text);
+  });
+}
+
+const gayaWrapper = document.createElement("div");
+newElement123.appendChild(gayaWrapper);
 
 const inputMessage123 = document.createElement("input");
 inputMessage123.setAttribute("type","text");
 inputMessage123.setAttribute("list","emoji");
 inputMessage123.setAttribute("size","40");
 inputMessage123.setAttribute("id","message123");
-inputMessage123.setAttribute("style","color: black; background-color: #c0c0c0; border: 1px solid #c0c0c0; border-radius: 4px; display: inline-block; padding: 8px;"); 
+inputMessage123.setAttribute("placeholder","words");
+inputMessage123.setAttribute("style","color: black; background-color: #ddd; border: 1px solid #ddd; border-radius: 4px; display: inline-block; padding: 8px;"); 
 
 const datalistEmoji123 = document.createElement("datalist");
 datalistEmoji123.setAttribute("id", "emoji");
@@ -63,8 +110,8 @@ for (emoji of emojis) {
   datalistEmoji123.appendChild(optionEmoji01);
 }
 
-newElement123.appendChild(inputMessage123);
-newElement123.appendChild(datalistEmoji123);
+gayaWrapper.appendChild(inputMessage123);
+gayaWrapper.appendChild(datalistEmoji123);
 
 document.body.appendChild(newElement123);
 
@@ -82,31 +129,16 @@ inputMessage123.addEventListener("keydown", event => {
       roomKey: inputRoomKey123.value,
       message: inputMessage123.value
     }
-    console.log(data);
+    const pub = CryptoJS.enc.Hex.stringify(CryptoJS.SHA1(`${inputRoomKey123.value}\t${inputKey.value}`));
+    console.log("pub", pub);
+    client.publish(`/${pub}`, {
+      text: data.message
+    });
   }
 });
 
 ////////////
 
-// const script123 = document.createElement("script");
-// script123.src = "https://cdn.jsdelivr.net/npm/gun/gun.js";
-// document.body.appendChild(script123);
-// import Gun from "https://cdn.jsdelivr.net/npm/gun@0.2020.1235/browser.min.js";
-// import Gun from 'node_modules/gun/gun'
-// const Gun =  require("./gun.js");
-const Gun =  require("gun/gun");
-
-var gun = Gun(['http://localhost:8080/gun']);
-
-const alice = gun.get('key').put({name: 'alice', age: 22});
-alice.on(function(node){
-  console.log('Subscribed to Alice!', node);
-});
-
-const el = document.getElementById("b");
-el.onclick = () => {
-  gun.get('key').put({name: 'onclick alice', age: 23});
-};
 
 ////////////////////
 

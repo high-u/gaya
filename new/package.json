@@ -3,7 +3,7 @@
     "build": "browserify ./test.js -o ./dist/test.js"
   },
   "dependencies": {
-    "gun": "^0.2020.1235"
+    "faye": "^1.4.0"
   },
   "devDependencies": {
     "browserify": "^17.0.0"
